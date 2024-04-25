@@ -1,8 +1,8 @@
-use std::net::TcpListener;
-use sqlx::{Connection, Executor, PgConnection, PgPool};
-use uuid::Uuid;
-use newsletter::configuration::{DatabaseSettings, get_configuration};
+use newsletter::configuration::{get_configuration, DatabaseSettings};
 use newsletter::startup::run;
+use sqlx::{Connection, Executor, PgConnection, PgPool};
+use std::net::TcpListener;
+use uuid::Uuid;
 
 pub struct TestApp {
     pub address: String,
@@ -10,8 +10,7 @@ pub struct TestApp {
 }
 
 async fn spawn_app() -> TestApp {
-    let listener = TcpListener::bind("127.0.0.1:0")
-        .expect("Failed to bind random port");
+    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
 
@@ -103,7 +102,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     let test_cases = vec![
         ("name=abc", "missing the email"),
         ("email=dev.jungclaire@gmail.com", "missing the name"),
-        ("", "missing both name and email")
+        ("", "missing both name and email"),
     ];
 
     for (invalid_body, error_message) in test_cases {
@@ -120,7 +119,8 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         assert_eq!(
             400,
             response.status().as_u16(),
-            "The API did not fail with 400 Bad Request when the payload was {}.", error_message
+            "The API did not fail with 400 Bad Request when the payload was {}.",
+            error_message
         );
     }
 }

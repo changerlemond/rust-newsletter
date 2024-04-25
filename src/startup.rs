@@ -1,8 +1,8 @@
-use std::net::TcpListener;
-use actix_web::dev::Server;
-use actix_web::{App, HttpServer, web};
-use sqlx::{PgPool};
 use crate::routes::{health_check, subscribe};
+use actix_web::dev::Server;
+use actix_web::{web, App, HttpServer};
+use sqlx::PgPool;
+use std::net::TcpListener;
 
 pub fn run(
     listener: TcpListener,
@@ -15,7 +15,7 @@ pub fn run(
             .route("/subscriptions", web::post().to(subscribe))
             .app_data(db_pool.clone())
     })
-        .listen(listener)?
-        .run();
+    .listen(listener)?
+    .run();
     Ok(server)
 }
